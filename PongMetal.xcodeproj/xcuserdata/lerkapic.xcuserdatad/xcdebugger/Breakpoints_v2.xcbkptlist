@@ -14,40 +14,40 @@
             filePath = "PongMetal/GeometryUtil.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
             landmarkName = "calcNormals(vertices:indices:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "DAD39AAD-E470-49E9-9938-6AA64A4F9B3C - 9815c2569b82ece3"
+                  uuid = "DAD39AAD-E470-49E9-9938-6AA64A4F9B3C - 61ac8fbb7c21a8a"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "static PongMetal.GeometryUtil.calcNormals(vertices: Swift.Array&lt;Swift.Float&gt;, indices: Swift.Array&lt;Swift.UInt16&gt;) -&gt; Swift.Array&lt;Swift.Float&gt;"
                   moduleName = "PongMetal"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lerkapic/Desktop/Projects/PongMetal/PongMetal/PongMetal/GeometryUtil.swift"
+                  urlString = "file:///Users/lerkapic/Desktop/Projects/pong_using_metal_api/PongMetal/GeometryUtil.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "52"
-                  endingLineNumber = "52"
-                  offsetFromSymbolStart = "6948">
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "6888">
                </Location>
                <Location
-                  uuid = "DAD39AAD-E470-49E9-9938-6AA64A4F9B3C - 9815c2569b82ed0e"
+                  uuid = "DAD39AAD-E470-49E9-9938-6AA64A4F9B3C - 61ac8fbb7c21a8a"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "static PongMetal.GeometryUtil.calcNormals(vertices: Swift.Array&lt;Swift.Float&gt;, indices: Swift.Array&lt;Swift.UInt16&gt;) -&gt; Swift.Array&lt;Swift.Float&gt;"
                   moduleName = "PongMetal"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lerkapic/Desktop/Projects/PongMetal/PongMetal/PongMetal/GeometryUtil.swift"
+                  urlString = "file:///Users/lerkapic/Desktop/Projects/pong_using_metal_api/PongMetal/GeometryUtil.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "55"
-                  endingLineNumber = "55"
-                  offsetFromSymbolStart = "7520">
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "7540">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -62,9 +62,73 @@
             filePath = "PongMetal/GeometryUtil.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
             landmarkName = "calcNormals(vertices:indices:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CFB60034-0A9A-475C-82B3-C053027F8062 - 61ac8fbb7c21d25"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static PongMetal.GeometryUtil.calcNormals(vertices: Swift.Array&lt;Swift.Float&gt;, indices: Swift.Array&lt;Swift.UInt16&gt;) -&gt; Swift.Array&lt;Swift.Float&gt;"
+                  moduleName = "PongMetal"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lerkapic/Desktop/Projects/pong_using_metal_api/PongMetal/GeometryUtil.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "4756">
+               </Location>
+               <Location
+                  uuid = "CFB60034-0A9A-475C-82B3-C053027F8062 - 61ac8fbb7c21d25"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static PongMetal.GeometryUtil.calcNormals(vertices: Swift.Array&lt;Swift.Float&gt;, indices: Swift.Array&lt;Swift.UInt16&gt;) -&gt; Swift.Array&lt;Swift.Float&gt;"
+                  moduleName = "PongMetal"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lerkapic/Desktop/Projects/pong_using_metal_api/PongMetal/GeometryUtil.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "5140">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CA0C010B-E0DC-4214-8D4D-D1ADE2569CC9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PongMetal/Buffers/LightBuffers.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "writeIntoBuffers(ambientLight:directionalLight:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6B899221-9529-440D-97E8-ACC7DD32A037"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PongMetal/Coordinator.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
+            landmarkName = "draw(in:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

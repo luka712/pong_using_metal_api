@@ -17,20 +17,23 @@ class Coordinator : NSObject, MTKViewDelegate {
     var camera: Camera
     
     // paddles
-    let paddle1 = Paddle(position: simd_float3(0,0,0))
+    let paddle1 = Paddle(position: simd_float3(0,0,10))
     let paddle2 = Paddle(position: simd_float3(0,0,-10))
     let paddleRenderPipeline: RenderPipeline
-    let paddleTransformBuffers: MTLBuffer
-    let paddleNormalBuffers: MTLBuffer
-    let paddleBuffers: Buffers
+    let paddleInstanceBuffers: InstanceBuffers
+    let paddleBuffers: GeometryBuffers
 
     // ball
     let ball = Ball(position: simd_float3(0.0,0.0,0.0))
     let ballRenderPipeline: RenderPipeline
-    let ballTransformBuffer: MTLBuffer
-    let ballNormalBuffer: MTLBuffer
-    let ballBuffers: Buffers
+    let ballInstanceBuffers: InstanceBuffers
+    let ballGeometryBuffers: GeometryBuffers
     let countOfBallIndices: Int
+    
+    // light
+    var ambientLight = AmbientLight()
+    var directionalLight = DirectionalLight()
+    let lightBuffer: LightBuffers
     
     
     let device: MTLDevice
@@ -54,17 +57,19 @@ class Coordinator : NSObject, MTKViewDelegate {
         // setup paddles
         paddleRenderPipeline = RenderPipeline(device, shaderLib)
         let cubeGeometry = CubeGeometry();
-        paddleBuffers = Buffers(device, cubeGeometry.indices, cubeGeometry.positionVertices, cubeGeometry.normalVertices)
-        paddleTransformBuffers = device.makeBuffer(length: MemoryLayout<simd_float4x4>.stride * 2, options: [])!
-        paddleNormalBuffers = device.makeBuffer(length: MemoryLayout<simd_float3x3>.stride * 2, options: [])!
+        paddleBuffers = GeometryBuffers(device, cubeGeometry.indices, cubeGeometry.positionVertices, cubeGeometry.normalVertices)
+        paddleInstanceBuffers = InstanceBuffers(device, instances: 2)
+        
         
         // setup ball
         ballRenderPipeline = RenderPipeline(device, shaderLib)
         let ballGeometry = CylinderGeometry()
-        ballBuffers = Buffers(device, ballGeometry.indices, ballGeometry.positionVertices, ballGeometry.normalVertices)
-        ballTransformBuffer = device.makeBuffer(length: MemoryLayout<simd_float4x4>.stride, options: [])!
-        ballNormalBuffer = device.makeBuffer(length: MemoryLayout<simd_float3x3>.stride, options: [])!
+        ballGeometryBuffers = GeometryBuffers(device, ballGeometry.indices, ballGeometry.positionVertices, ballGeometry.normalVertices)
+        ballInstanceBuffers = InstanceBuffers(device,instances: 1)
         countOfBallIndices = ballGeometry.indices.count
+        
+        // lights
+        lightBuffer = LightBuffers(device)
         
     }
     
@@ -75,16 +80,15 @@ class Coordinator : NSObject, MTKViewDelegate {
     func drawPaddles(renderEncoder: MTLRenderCommandEncoder)
     {
         // load data to transform buffer
-        var pointer = paddleTransformBuffers.contents()
-        pointer.copyMemory(from: &paddle1.transformMatrix, byteCount: MemoryLayout<simd_float4x4>.stride)
-        pointer.advanced(by: MemoryLayout<simd_float4x4>.stride).copyMemory(from: &paddle2.transformMatrix, byteCount: MemoryLayout<simd_float4x4>.stride)
+        var normal1 = paddle1.normalMatrix
+        var normal2 = paddle2.normalMatrix
         
-        var normalMatrix1 = MatrixUtil.normalMatrix(paddle1.transformMatrix)
-        var normalMatrix2 = MatrixUtil.normalMatrix(paddle2.transformMatrix)
-                
-        pointer = paddleNormalBuffers.contents()
-        pointer.copyMemory(from: &normalMatrix1, byteCount: MemoryLayout<simd_float3x3>.stride)
-        pointer.advanced(by: MemoryLayout<simd_float3x3>.stride).copyMemory(from: &normalMatrix2, byteCount: MemoryLayout<simd_float3x3>.stride)
+        var diffColor1 = paddle1.material.diffuseColor
+        var diffColor2 = paddle2.material.diffuseColor
+        
+        paddleInstanceBuffers.writeToBuffers(instance: 0, transformMatrix: &paddle1.transformMatrix, normalMatrix: &normal1, diffuseColor: &diffColor1)
+        paddleInstanceBuffers.writeToBuffers(instance: 1, transformMatrix: &paddle2.transformMatrix, normalMatrix: &normal2, diffuseColor: &diffColor2)
+
         
         renderEncoder.setRenderPipelineState(paddleRenderPipeline.renderPipelineState)
         
@@ -92,9 +96,12 @@ class Coordinator : NSObject, MTKViewDelegate {
         renderEncoder.setVertexBuffer(paddleBuffers.normalBuffer, offset: 0, index: 1)
         renderEncoder.setVertexBuffer(cameraBuffers.perspectiveCameraBuffer, offset: 0, index: 2)
         renderEncoder.setVertexBuffer(cameraBuffers.viewCameraBuffer, offset: 0, index: 3)
-        renderEncoder.setVertexBuffer(paddleTransformBuffers, offset: 0, index: 4)
-        renderEncoder.setVertexBuffer(paddleNormalBuffers, offset: 0, index: 5)
-        
+        renderEncoder.setVertexBuffer(paddleInstanceBuffers.transformBuffer, offset: 0, index: 4)
+        renderEncoder.setVertexBuffer(paddleInstanceBuffers.normalBuffer, offset: 0, index: 5)
+        renderEncoder.setVertexBuffer(paddleInstanceBuffers.diffuseColorBuffer, offset: 0, index: 6)
+        renderEncoder.setVertexBuffer(lightBuffer.ambientLightBuffer, offset: 0, index: 7)
+        renderEncoder.setVertexBuffer(lightBuffer.directionalLightDirectionBuffer, offset: 0, index: 8)
+        renderEncoder.setVertexBuffer(lightBuffer.directionalLightColorBuffer, offset: 0, index: 9)
         
         renderEncoder.drawIndexedPrimitives(
             type: MTLPrimitiveType.triangle,
@@ -109,26 +116,28 @@ class Coordinator : NSObject, MTKViewDelegate {
     func drawBall(renderEncoder: MTLRenderCommandEncoder)
     {
         // load data to transform buffer
-        ballTransformBuffer.contents().copyMemory(from: &ball.transformMatrix, byteCount: ballTransformBuffer.length)
-        
-        var normalMatrix = MatrixUtil.normalMatrix(ball.transformMatrix)
-        ballNormalBuffer.contents().copyMemory(from: &normalMatrix, byteCount: ballNormalBuffer.length)
-        
-        
+        var normal = ball.normalMatrix
+        var diffColor = ball.material.diffuseColor
+        ballInstanceBuffers.writeToBuffers(instance: 0, transformMatrix: &ball.transformMatrix, normalMatrix: &normal, diffuseColor: &diffColor)
+
         renderEncoder.setRenderPipelineState(ballRenderPipeline.renderPipelineState)
         
-        renderEncoder.setVertexBuffer(ballBuffers.vertexPositionBuffer, offset: 0, index: 0)
-        renderEncoder.setVertexBuffer(ballBuffers.normalBuffer, offset: 0, index: 1)
+        renderEncoder.setVertexBuffer(ballGeometryBuffers.vertexPositionBuffer, offset: 0, index: 0)
+        renderEncoder.setVertexBuffer(ballGeometryBuffers.normalBuffer, offset: 0, index: 1)
         renderEncoder.setVertexBuffer(cameraBuffers.perspectiveCameraBuffer, offset: 0, index: 2)
         renderEncoder.setVertexBuffer(cameraBuffers.viewCameraBuffer, offset: 0, index: 3)
-        renderEncoder.setVertexBuffer(ballTransformBuffer, offset: 0, index: 4)
-        
+        renderEncoder.setVertexBuffer(ballInstanceBuffers.transformBuffer, offset: 0, index: 4)
+        renderEncoder.setVertexBuffer(ballInstanceBuffers.normalBuffer, offset: 0, index: 5)
+        renderEncoder.setVertexBuffer(ballInstanceBuffers.diffuseColorBuffer, offset: 0, index: 6)
+        renderEncoder.setVertexBuffer(lightBuffer.ambientLightBuffer, offset: 0, index: 7)
+        renderEncoder.setVertexBuffer(lightBuffer.directionalLightDirectionBuffer, offset: 0, index: 8)
+        renderEncoder.setVertexBuffer(lightBuffer.directionalLightColorBuffer, offset: 0, index: 9)
         
         renderEncoder.drawIndexedPrimitives(
             type: MTLPrimitiveType.triangle,
             indexCount: countOfBallIndices,
             indexType: MTLIndexType.uint16,
-            indexBuffer: ballBuffers.indexBuffer,
+            indexBuffer: ballGeometryBuffers.indexBuffer,
             indexBufferOffset: 0,
             instanceCount: 1
         )
@@ -176,27 +185,19 @@ class Coordinator : NSObject, MTKViewDelegate {
         
         // create a render command encoder
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-        renderEncoder.setCullMode(.none)
-        renderEncoder.setFrontFacing(.clockwise)
+        renderEncoder.setCullMode(.back)
+        renderEncoder.setFrontFacing(.counterClockwise)
         renderEncoder.setDepthStencilState(depthStencilState)
         
         // DRAW HERE
 
         // load data to perspective buffer and view buffer
-        cameraBuffers.perspectiveCameraBuffer
-            .contents()
-            .copyMemory(
-                from: &camera.perspectiveMatrix,
-                byteCount: cameraBuffers.perspectiveCameraBuffer.length
-            )
+        cameraBuffers.writeToBuffers(camera: &camera)
         
-        cameraBuffers.viewCameraBuffer
-            .contents()
-            .copyMemory(
-            from: &camera.viewMatrix,
-            byteCount: cameraBuffers.viewCameraBuffer.length
-        )
-
+        // load lights data
+        lightBuffer.writeIntoBuffers(ambientLight: &ambientLight, directionalLight: &directionalLight) 
+        
+        
         drawPaddles(renderEncoder: renderEncoder)
         drawBall(renderEncoder: renderEncoder)
        

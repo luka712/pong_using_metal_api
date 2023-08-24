@@ -28,4 +28,22 @@ class CameraBuffers
         _perspectiveCameraBuffer = device.makeBuffer( length: MemoryLayout<Float>.stride * 16, options: [])!
         _viewCameraBuffer = device.makeBuffer( length: MemoryLayout<Float>.stride * 16, options: [])!
     }
+    
+    func writeToBuffers(camera: inout Camera)
+    {
+        // load data to perspective buffer and view buffer
+        _perspectiveCameraBuffer
+            .contents()
+            .copyMemory(
+                from: &camera.perspectiveMatrix,
+                byteCount: _perspectiveCameraBuffer.length
+            )
+        
+        _viewCameraBuffer
+            .contents()
+            .copyMemory(
+            from: &camera.viewMatrix,
+            byteCount: _viewCameraBuffer.length
+        )
+    }
 }

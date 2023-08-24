@@ -1,30 +1,27 @@
 //
-//  Buffers.swift
+//  GeometryBuffers.swift
 //  PongMetal
 //
-//  Created by Luka Erkapic on 20.08.23.
+//  Created by Luka Erkapic on 24.08.23.
 //
 
 import Foundation
 import Metal
 
-class Buffers
+/**
+ * Buffers for game objects geometry 
+ */
+class GeometryBuffers
 {
     private let _indexBuffer: MTLBuffer
     private let _vertexPositionBuffer: MTLBuffer
     private let _normalBuffer: MTLBuffer
     
-    var indexBuffer: MTLBuffer {
-        get { return _indexBuffer}
-    }
+    var indexBuffer: MTLBuffer { return _indexBuffer}
     
-    var vertexPositionBuffer: MTLBuffer {
-        get { return _vertexPositionBuffer }
-    }
+    var vertexPositionBuffer: MTLBuffer { return _vertexPositionBuffer }
     
-    var normalBuffer: MTLBuffer {
-        get { return _normalBuffer }
-    }
+    var normalBuffer: MTLBuffer { return _normalBuffer }
     
     init(_ device: MTLDevice, _ indicesData: [uint16], _ positionsData: [Float], _ normalsData: [Float])
     {

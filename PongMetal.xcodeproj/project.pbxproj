@@ -10,6 +10,12 @@
 		C604234B2A926D5600CFBC3E /* shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = C604234A2A926D5600CFBC3E /* shader.metal */; };
 		C604234D2A92706B00CFBC3E /* shader.metallib in Resources */ = {isa = PBXBuildFile; fileRef = C604234C2A92706B00CFBC3E /* shader.metallib */; };
 		C604234F2A92708300CFBC3E /* ShaderLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = C604234E2A92708300CFBC3E /* ShaderLib.swift */; };
+		C60666E92A974CC900034A10 /* AmbientLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60666E82A974CC900034A10 /* AmbientLight.swift */; };
+		C60666ED2A974EF700034A10 /* BasicMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60666EC2A974EF700034A10 /* BasicMaterial.swift */; };
+		C60666F12A974FE600034A10 /* GeometryBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60666F02A974FE600034A10 /* GeometryBuffers.swift */; };
+		C60666F32A97507B00034A10 /* InstanceBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60666F22A97507B00034A10 /* InstanceBuffers.swift */; };
+		C60666F72A975A0E00034A10 /* LightBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60666F62A975A0E00034A10 /* LightBuffers.swift */; };
+		C60666F92A975B1D00034A10 /* DirectionalLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60666F82A975B1D00034A10 /* DirectionalLight.swift */; };
 		C63EC8FC2A93C87A0093035E /* CubeGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63EC8FB2A93C87A0093035E /* CubeGeometry.swift */; };
 		C663D0D82A91E5F70012F673 /* PongMetalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D0D72A91E5F70012F673 /* PongMetalApp.swift */; };
 		C663D0DA2A91E5F70012F673 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D0D92A91E5F70012F673 /* ContentView.swift */; };
@@ -19,7 +25,6 @@
 		C699C7342A93CD07000740A7 /* MatrixUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C699C7332A93CD07000740A7 /* MatrixUtil.swift */; };
 		C699C7362A93CEC8000740A7 /* CameraBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C699C7352A93CEC8000740A7 /* CameraBuffers.swift */; };
 		C6D381CA2A92AB1F00E9BBD9 /* RenderPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D381C92A92AB1F00E9BBD9 /* RenderPipeline.swift */; };
-		C6D381CC2A92AEE000E9BBD9 /* Buffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D381CB2A92AEE000E9BBD9 /* Buffers.swift */; };
 		C6D5ECC02A968C85008CE25A /* GeometryUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */; };
 		C6D5ECC22A968FF5008CE25A /* CylinderGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */; };
 		C6FA66F92A953D780063635B /* Paddle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FA66F82A953D780063635B /* Paddle.swift */; };
@@ -32,6 +37,12 @@
 		C604234A2A926D5600CFBC3E /* shader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shader.metal; sourceTree = "<group>"; };
 		C604234C2A92706B00CFBC3E /* shader.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; path = shader.metallib; sourceTree = "<group>"; };
 		C604234E2A92708300CFBC3E /* ShaderLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderLib.swift; sourceTree = "<group>"; };
+		C60666E82A974CC900034A10 /* AmbientLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientLight.swift; sourceTree = "<group>"; };
+		C60666EC2A974EF700034A10 /* BasicMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicMaterial.swift; sourceTree = "<group>"; };
+		C60666F02A974FE600034A10 /* GeometryBuffers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryBuffers.swift; sourceTree = "<group>"; };
+		C60666F22A97507B00034A10 /* InstanceBuffers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstanceBuffers.swift; sourceTree = "<group>"; };
+		C60666F62A975A0E00034A10 /* LightBuffers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightBuffers.swift; sourceTree = "<group>"; };
+		C60666F82A975B1D00034A10 /* DirectionalLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionalLight.swift; sourceTree = "<group>"; };
 		C63EC8FB2A93C87A0093035E /* CubeGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeGeometry.swift; sourceTree = "<group>"; };
 		C663D0D42A91E5F70012F673 /* PongMetal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PongMetal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C663D0D72A91E5F70012F673 /* PongMetalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PongMetalApp.swift; sourceTree = "<group>"; };
@@ -43,7 +54,6 @@
 		C699C7332A93CD07000740A7 /* MatrixUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixUtil.swift; sourceTree = "<group>"; };
 		C699C7352A93CEC8000740A7 /* CameraBuffers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraBuffers.swift; sourceTree = "<group>"; };
 		C6D381C92A92AB1F00E9BBD9 /* RenderPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPipeline.swift; sourceTree = "<group>"; };
-		C6D381CB2A92AEE000E9BBD9 /* Buffers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffers.swift; sourceTree = "<group>"; };
 		C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtil.swift; sourceTree = "<group>"; };
 		C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CylinderGeometry.swift; sourceTree = "<group>"; };
 		C6FA66F82A953D780063635B /* Paddle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paddle.swift; sourceTree = "<group>"; };
@@ -63,6 +73,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C60666EA2A974D2500034A10 /* Lights */ = {
+			isa = PBXGroup;
+			children = (
+				C60666E82A974CC900034A10 /* AmbientLight.swift */,
+				C60666F82A975B1D00034A10 /* DirectionalLight.swift */,
+			);
+			path = Lights;
+			sourceTree = "<group>";
+		};
+		C60666EB2A974ED200034A10 /* Material */ = {
+			isa = PBXGroup;
+			children = (
+				C60666EC2A974EF700034A10 /* BasicMaterial.swift */,
+			);
+			path = Material;
+			sourceTree = "<group>";
+		};
+		C60666EE2A974F5000034A10 /* GameObjects */ = {
+			isa = PBXGroup;
+			children = (
+				C6FA67002A9560B00063635B /* Ball.swift */,
+				C6FA66F82A953D780063635B /* Paddle.swift */,
+			);
+			path = GameObjects;
+			sourceTree = "<group>";
+		};
+		C60666EF2A974FBB00034A10 /* Buffers */ = {
+			isa = PBXGroup;
+			children = (
+				C699C7352A93CEC8000740A7 /* CameraBuffers.swift */,
+				C60666F02A974FE600034A10 /* GeometryBuffers.swift */,
+				C60666F22A97507B00034A10 /* InstanceBuffers.swift */,
+				C60666F62A975A0E00034A10 /* LightBuffers.swift */,
+			);
+			path = Buffers;
+			sourceTree = "<group>";
+		};
 		C663D0CB2A91E5F70012F673 = {
 			isa = PBXGroup;
 			children = (
@@ -82,7 +129,10 @@
 		C663D0D62A91E5F70012F673 /* PongMetal */ = {
 			isa = PBXGroup;
 			children = (
-				C6FA67002A9560B00063635B /* Ball.swift */,
+				C60666EF2A974FBB00034A10 /* Buffers */,
+				C60666EE2A974F5000034A10 /* GameObjects */,
+				C60666EB2A974ED200034A10 /* Material */,
+				C60666EA2A974D2500034A10 /* Lights */,
 				C6FA66FC2A9550720063635B /* Camera.swift */,
 				C6FA66FA2A954EDD0063635B /* Constants.swift */,
 				C604234C2A92706B00CFBC3E /* shader.metallib */,
@@ -95,11 +145,8 @@
 				C663D0E82A91EA400012F673 /* Coordinator.swift */,
 				C604234E2A92708300CFBC3E /* ShaderLib.swift */,
 				C6D381C92A92AB1F00E9BBD9 /* RenderPipeline.swift */,
-				C6D381CB2A92AEE000E9BBD9 /* Buffers.swift */,
 				C63EC8FB2A93C87A0093035E /* CubeGeometry.swift */,
 				C699C7332A93CD07000740A7 /* MatrixUtil.swift */,
-				C699C7352A93CEC8000740A7 /* CameraBuffers.swift */,
-				C6FA66F82A953D780063635B /* Paddle.swift */,
 				C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */,
 				C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */,
 			);
@@ -185,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C60666E92A974CC900034A10 /* AmbientLight.swift in Sources */,
 				C63EC8FC2A93C87A0093035E /* CubeGeometry.swift in Sources */,
 				C6FA66F92A953D780063635B /* Paddle.swift in Sources */,
 				C604234B2A926D5600CFBC3E /* shader.metal in Sources */,
@@ -195,11 +243,15 @@
 				C6D381CA2A92AB1F00E9BBD9 /* RenderPipeline.swift in Sources */,
 				C699C7342A93CD07000740A7 /* MatrixUtil.swift in Sources */,
 				C604234F2A92708300CFBC3E /* ShaderLib.swift in Sources */,
-				C6D381CC2A92AEE000E9BBD9 /* Buffers.swift in Sources */,
+				C60666ED2A974EF700034A10 /* BasicMaterial.swift in Sources */,
 				C6FA66FD2A9550720063635B /* Camera.swift in Sources */,
 				C6FA67012A9560B00063635B /* Ball.swift in Sources */,
+				C60666F72A975A0E00034A10 /* LightBuffers.swift in Sources */,
 				C663D0D82A91E5F70012F673 /* PongMetalApp.swift in Sources */,
+				C60666F12A974FE600034A10 /* GeometryBuffers.swift in Sources */,
+				C60666F32A97507B00034A10 /* InstanceBuffers.swift in Sources */,
 				C6D5ECC22A968FF5008CE25A /* CylinderGeometry.swift in Sources */,
+				C60666F92A975B1D00034A10 /* DirectionalLight.swift in Sources */,
 				C6FA66FB2A954EDD0063635B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

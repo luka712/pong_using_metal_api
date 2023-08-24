@@ -33,12 +33,8 @@ struct GeometryUtil
             let u = b - a
             let v = c - a
             
-            let n = simd_cross(u, v)
-            
-            print(p0)
-            print(p1)
-            print(p2)
-            
+            let n = normalize(simd_cross(u, v))
+
             normals[p0] = n.x
             normals[p0+1] = n.y
             normals[p0+2] = n.z

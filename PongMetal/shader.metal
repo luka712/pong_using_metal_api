@@ -14,6 +14,15 @@ struct VSOutput
     float4 position [[position]];
     float3 normal [[user(locn0)]];
     float3 fragmentPosition [[user(locn1)]];
+    
+    // material
+    float4 diffuseColor [[user(locn2)]];
+    
+    // lights
+    float4 ambientLight [[user(locn3)]];
+    float3 directionalLightDir [[user(locn4)]];
+    float4 directionalLightColor [[user(locn5)]];
+
 };
 
 vertex VSOutput vs_main(
@@ -21,11 +30,19 @@ vertex VSOutput vs_main(
                         const device packed_float3* a_position [[buffer(0)]],
                         const device packed_float3* a_normal [[buffer(1)]],
                         
-                        // uniforms
+                        // camera transform uniforms
                         constant float4x4 &projectionMatrix [[buffer(2)]],
                         constant float4x4 &viewMatrix [[buffer(3)]],
                         constant float4x4 *transformMatrix [[buffer(4)]],
                         constant float3x3 *normalMatrix [[buffer(5)]],
+                        
+                        // material
+                        constant float4 *diffuseColor [[buffer(6)]],
+                        
+                        // lights
+                        constant float4 &ambientLight [[buffer(7)]],
+                        constant packed_float3 &directionalLightDir [[buffer(8)]],
+                        constant float4 &directionalLightColor [[buffer(9)]],
                         
                         // built in
                         uint vid [[vertex_id]],
@@ -39,19 +56,24 @@ vertex VSOutput vs_main(
     out.position = projectionMatrix * viewMatrix * fragPos;
     out.normal = normalize(normalMatrix[iid] * a_normal[vid].xyz);
     out.fragmentPosition = fragPos.xyz;
+    out.diffuseColor = diffuseColor[iid];
+    out.ambientLight = ambientLight;
+    out.directionalLightDir = directionalLightDir;
+    out.directionalLightColor = directionalLightColor;
     
     return out;
 }
 
 fragment float4 fs_main(VSOutput in [[stage_in]])
 {
-    float3 dirLightDir = normalize(float3(0.0, -1.0, 0.0));
+    float4 ambientFactor = in.diffuseColor * in.ambientLight;
+    
     float3 normal = in.normal;
     
-    float amount = max(dot(normal, -dirLightDir), 0.0);
-    float4 diffuse = float4(1.0, 1.0, 1.0, 1.0) * amount;
+    float amount = max(dot(normal, -in.directionalLightDir), 0.0);
+    float4 directionalFactor= in.diffuseColor * in.directionalLightColor * amount;
     
-    
-    return float4(0.4, 0.4, 0.4, 1.0) * diffuse;
+    return ambientFactor + directionalFactor;
+
 }
 
