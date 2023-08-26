@@ -17,7 +17,8 @@ struct Camera
     {
         perspectiveMatrix = MatrixUtil.perspectiveProjectionMatrix(Float.pi * 0.33, Float(width/height), 0.1, 1000.0)
         
-       //  viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(0.000001,12,0), simd_float3(0,0,0), simd_float3(0,1,0))
-        viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(4,4,4), simd_float3(0,0,0), simd_float3(0,1,0))
+        viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(0.000001,-12,0), simd_float3(0,0,0), simd_float3(0,1,0))
+        viewMatrix *= MatrixUtil.rotationMatrix(angle:  .pi / 2, axis: simd_float3(0,-1,0))
+        // viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(4,4,4), simd_float3(0,0,0), simd_float3(0,1,0))
     }
 }

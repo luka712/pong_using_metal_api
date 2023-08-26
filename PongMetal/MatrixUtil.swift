@@ -26,10 +26,10 @@ struct MatrixUtil
     
     static func lookAtMatrix(_ eye: simd_float3, _ target: simd_float3, _ up: simd_float3) -> simd_float4x4 {
         let zAxis = normalize(eye - target)
-          let xAxis = normalize(cross(up, zAxis))
-          let yAxis = cross(zAxis, xAxis)
+        let xAxis = normalize(cross(up, zAxis))
+        let yAxis = cross(zAxis, xAxis)
           
-          return simd_float4x4(simd_float4(xAxis.x, yAxis.x, zAxis.x, 0),
+        return simd_float4x4(simd_float4(xAxis.x, yAxis.x, zAxis.x, 0),
                                simd_float4(xAxis.y, yAxis.y, zAxis.y, 0),
                                simd_float4(xAxis.z, yAxis.z, zAxis.z, 0),
                                simd_float4(-dot(xAxis, eye), -dot(yAxis, eye), -dot(zAxis, eye), 1))
@@ -53,6 +53,34 @@ struct MatrixUtil
             simd_float4(0, 0, 0, 1)
         );
 
+    }
+    
+    
+    static func rotationMatrix(angle: Float, axis: simd_float3) -> simd_float4x4 {
+        let normalizedAxis = normalize(axis)
+        let cosAngle = cos(angle)
+        let sinAngle = sin(angle)
+        let oneMinusCos = 1 - cosAngle
+        
+        let x = normalizedAxis.x
+        let y = normalizedAxis.y
+        let z = normalizedAxis.z
+        
+        var rotationMatrix = identity()
+        
+        rotationMatrix[0][0] = cosAngle + x * x * oneMinusCos
+        rotationMatrix[0][1] = x * y * oneMinusCos - z * sinAngle
+        rotationMatrix[0][2] = x * z * oneMinusCos + y * sinAngle
+        
+        rotationMatrix[1][0] = y * x * oneMinusCos + z * sinAngle
+        rotationMatrix[1][1] = cosAngle + y * y * oneMinusCos
+        rotationMatrix[1][2] = y * z * oneMinusCos - x * sinAngle
+        
+        rotationMatrix[2][0] = z * x * oneMinusCos - y * sinAngle
+        rotationMatrix[2][1] = z * y * oneMinusCos + x * sinAngle
+        rotationMatrix[2][2] = cosAngle + z * z * oneMinusCos
+        
+        return rotationMatrix
     }
 
     static func identity() -> simd_float4x4 {

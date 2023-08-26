@@ -7,18 +7,22 @@
 
 import Foundation
 import MetalKit
-
+import GameController
 
 class Coordinator : NSObject, MTKViewDelegate {
 
     let width: CGFloat
     let height: CGFloat
     
-    var camera: Camera
+    let device: MTLDevice
+    let shaderLib: ShaderLib
+    
+    let inputManager: InputManager
+    
     
     // paddles
-    let paddle1 = Paddle(position: simd_float3(0,0,10))
-    let paddle2 = Paddle(position: simd_float3(0,0,-10))
+    let paddle1: Paddle
+    let paddle2: Paddle
     let paddleRenderPipeline: RenderPipeline
     let paddleInstanceBuffers: InstanceBuffers
     let paddleBuffers: GeometryBuffers
@@ -32,13 +36,12 @@ class Coordinator : NSObject, MTKViewDelegate {
     
     // light
     var ambientLight = AmbientLight()
-    var directionalLight = DirectionalLight()
+    var directionalLight = DirectionalLight(direction: simd_float3(0,1,0))
     let lightBuffer: LightBuffers
     
-    
-    let device: MTLDevice
-    let shaderLib: ShaderLib
 
+    // camera
+    var camera: Camera
     let cameraBuffers: CameraBuffers
     
     
@@ -46,6 +49,11 @@ class Coordinator : NSObject, MTKViewDelegate {
     {
         self.width = width
         self.height = height
+        
+        inputManager = InputManager()
+        
+        self.paddle1 = Paddle(false, inputManager)
+        self.paddle2 = Paddle(true, inputManager)
     
         self.camera = Camera(width,height)
         
@@ -70,6 +78,8 @@ class Coordinator : NSObject, MTKViewDelegate {
         
         // lights
         lightBuffer = LightBuffers(device)
+        
+        super.init()
         
     }
     
@@ -143,10 +153,33 @@ class Coordinator : NSObject, MTKViewDelegate {
         )
     }
     
+    func clampPaddle(paddle: Paddle){
+        
+        let bound = Float(5)
+        
+        if paddle.position.z > bound {
+            paddle.position.z = bound
+        }
+        else if paddle.position.z < -bound {
+            paddle.position.z = -bound
+        }
+        
+    }
+        
     func draw(in view: MTKView) {
+        
+      
         
         paddle1.update()
         paddle2.update()
+        ball.update()
+        
+        clampPaddle(paddle: paddle1)
+        clampPaddle(paddle: paddle2)
+        
+        ball.intersect(paddle: paddle1)
+        ball.intersect(paddle: paddle2)
+
         
         // if there is no drawable, return
         guard let drawable = view.currentDrawable else {

@@ -16,14 +16,13 @@ struct ContentView: NSViewRepresentable {
         view.delegate = context.coordinator
         view.device =  MTLCreateSystemDefaultDevice()
         view.drawableSize = view.frame.size
-        
+
         return view
     }
     
     func updateNSView(_ nsView: NSViewType, context: Context) {
         
     }
-    
   
     func makeCoordinator() -> Coordinator {
         Coordinator()
