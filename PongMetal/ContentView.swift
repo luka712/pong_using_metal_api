@@ -13,6 +13,7 @@ struct ContentView: NSViewRepresentable {
     @Binding var backgroundColor: Color
     @Binding var leftPaddleColor: Color
     @Binding var rightPaddleColor: Color
+    @Binding var ballColor: Color
     
     
     func makeNSView(context: Context) -> MTKView {
@@ -37,6 +38,9 @@ struct ContentView: NSViewRepresentable {
         setColor(
                 colorOut: &context.coordinator.paddle2.material.diffuseColor,
                 colorIn: rightPaddleColor)
+        
+        // setup ball color
+        setColor(colorOut: &context.coordinator.ball.material.diffuseColor,  colorIn: ballColor)
         
     }
   
@@ -70,6 +74,8 @@ struct ContentView_Previews: PreviewProvider {
         ContentView(
             backgroundColor: Binding.constant(.cyan),
             leftPaddleColor: Binding.constant(Color.gray),
-            rightPaddleColor: Binding.constant(Color.gray))
+            rightPaddleColor: Binding.constant(Color.gray),
+            ballColor: Binding.constant(Color.white)
+        )
     }
 }

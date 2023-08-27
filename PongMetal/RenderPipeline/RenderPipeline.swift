@@ -53,7 +53,6 @@ class RenderPipeline
             lightBuffers: LightBuffers
     )
     {
-        
         renderEncoder.setRenderPipelineState(renderPipelineState)
         
         renderEncoder.setVertexBuffer(geometryBuffers.vertexPositionBuffer, offset: 0, index: 0)

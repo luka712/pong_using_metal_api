@@ -25,6 +25,9 @@ struct MainContent : View
     @State private var backgroundColor = Color.cyan
     @State private var leftPaddleColor = Color.red
     @State private var rightPaddleColor = Color.blue
+    @State private var ballColor = Color.white
+    
+    
     
     var body: some View {
         HStack {
@@ -41,6 +44,10 @@ struct MainContent : View
                 Spacer()
                     .frame(height: 20)
                 ColorPicker("Right paddle color: ", selection: $rightPaddleColor)
+                
+                Spacer()
+                    .frame(height: 20)
+                ColorPicker("Ball color: ", selection: $ballColor)
             }
             .frame(width: 200, alignment: .topLeading)
             .padding(5)
@@ -49,7 +56,8 @@ struct MainContent : View
             ContentView(
                 backgroundColor: $backgroundColor,
                 leftPaddleColor: $leftPaddleColor,
-                rightPaddleColor: $rightPaddleColor
+                rightPaddleColor: $rightPaddleColor,
+                ballColor: $ballColor
             ).frame(width: GameSetup.gameWidth, height: GameSetup.gameHeight)
                 
            
