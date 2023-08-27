@@ -14,6 +14,8 @@ class Coordinator : NSObject, MTKViewDelegate {
     let width: CGFloat
     let height: CGFloat
     
+    var backgroundColor: simd_float4 = simd_float4(0.0,0.0,0.0,1.0)
+    
     let device: MTLDevice
     let shaderLib: ShaderLib
     
@@ -39,7 +41,6 @@ class Coordinator : NSObject, MTKViewDelegate {
     var directionalLight = DirectionalLight(direction: simd_float3(0,1,0))
     let lightBuffer: LightBuffers
     
-
     // camera
     var camera: Camera
     let cameraBuffers: CameraBuffers
@@ -67,7 +68,6 @@ class Coordinator : NSObject, MTKViewDelegate {
         let cubeGeometry = CubeGeometry();
         paddleBuffers = GeometryBuffers(device, cubeGeometry.indices, cubeGeometry.positionVertices, cubeGeometry.normalVertices)
         paddleInstanceBuffers = InstanceBuffers(device, instances: 2)
-        
         
         // setup ball
         ballRenderPipeline = RenderPipeline(device, shaderLib)
@@ -99,27 +99,13 @@ class Coordinator : NSObject, MTKViewDelegate {
         paddleInstanceBuffers.writeToBuffers(instance: 0, transformMatrix: &paddle1.transformMatrix, normalMatrix: &normal1, diffuseColor: &diffColor1)
         paddleInstanceBuffers.writeToBuffers(instance: 1, transformMatrix: &paddle2.transformMatrix, normalMatrix: &normal2, diffuseColor: &diffColor2)
 
-        
-        renderEncoder.setRenderPipelineState(paddleRenderPipeline.renderPipelineState)
-        
-        renderEncoder.setVertexBuffer(paddleBuffers.vertexPositionBuffer, offset: 0, index: 0)
-        renderEncoder.setVertexBuffer(paddleBuffers.normalBuffer, offset: 0, index: 1)
-        renderEncoder.setVertexBuffer(cameraBuffers.perspectiveCameraBuffer, offset: 0, index: 2)
-        renderEncoder.setVertexBuffer(cameraBuffers.viewCameraBuffer, offset: 0, index: 3)
-        renderEncoder.setVertexBuffer(paddleInstanceBuffers.transformBuffer, offset: 0, index: 4)
-        renderEncoder.setVertexBuffer(paddleInstanceBuffers.normalBuffer, offset: 0, index: 5)
-        renderEncoder.setVertexBuffer(paddleInstanceBuffers.diffuseColorBuffer, offset: 0, index: 6)
-        renderEncoder.setVertexBuffer(lightBuffer.ambientLightBuffer, offset: 0, index: 7)
-        renderEncoder.setVertexBuffer(lightBuffer.directionalLightDirectionBuffer, offset: 0, index: 8)
-        renderEncoder.setVertexBuffer(lightBuffer.directionalLightColorBuffer, offset: 0, index: 9)
-        
-        renderEncoder.drawIndexedPrimitives(
-            type: MTLPrimitiveType.triangle,
-            indexCount: 36,
-            indexType: MTLIndexType.uint16,
-            indexBuffer: paddleBuffers.indexBuffer,
-            indexBufferOffset: 0,
-            instanceCount: 2
+        paddleRenderPipeline.draw(renderEncoder: renderEncoder,
+                                  indexCount: 36,
+                                  instanceCount: 2,
+                                  geometryBuffers: paddleBuffers,
+                                  cameraBuffers: cameraBuffers,
+                                  instanceBuffers: paddleInstanceBuffers,
+                                  lightBuffers: lightBuffer
         )
     }
     
@@ -130,27 +116,13 @@ class Coordinator : NSObject, MTKViewDelegate {
         var diffColor = ball.material.diffuseColor
         ballInstanceBuffers.writeToBuffers(instance: 0, transformMatrix: &ball.transformMatrix, normalMatrix: &normal, diffuseColor: &diffColor)
 
-        renderEncoder.setRenderPipelineState(ballRenderPipeline.renderPipelineState)
-        
-        renderEncoder.setVertexBuffer(ballGeometryBuffers.vertexPositionBuffer, offset: 0, index: 0)
-        renderEncoder.setVertexBuffer(ballGeometryBuffers.normalBuffer, offset: 0, index: 1)
-        renderEncoder.setVertexBuffer(cameraBuffers.perspectiveCameraBuffer, offset: 0, index: 2)
-        renderEncoder.setVertexBuffer(cameraBuffers.viewCameraBuffer, offset: 0, index: 3)
-        renderEncoder.setVertexBuffer(ballInstanceBuffers.transformBuffer, offset: 0, index: 4)
-        renderEncoder.setVertexBuffer(ballInstanceBuffers.normalBuffer, offset: 0, index: 5)
-        renderEncoder.setVertexBuffer(ballInstanceBuffers.diffuseColorBuffer, offset: 0, index: 6)
-        renderEncoder.setVertexBuffer(lightBuffer.ambientLightBuffer, offset: 0, index: 7)
-        renderEncoder.setVertexBuffer(lightBuffer.directionalLightDirectionBuffer, offset: 0, index: 8)
-        renderEncoder.setVertexBuffer(lightBuffer.directionalLightColorBuffer, offset: 0, index: 9)
-        
-        renderEncoder.drawIndexedPrimitives(
-            type: MTLPrimitiveType.triangle,
-            indexCount: countOfBallIndices,
-            indexType: MTLIndexType.uint16,
-            indexBuffer: ballGeometryBuffers.indexBuffer,
-            indexBufferOffset: 0,
-            instanceCount: 1
-        )
+        ballRenderPipeline.draw(renderEncoder: renderEncoder,
+                                indexCount: countOfBallIndices,
+                                instanceCount: 1,
+                                geometryBuffers: ballGeometryBuffers,
+                                cameraBuffers: cameraBuffers,
+                                instanceBuffers: ballInstanceBuffers,
+                                lightBuffers: lightBuffer)
     }
     
     func clampPaddle(paddle: Paddle){
@@ -167,9 +139,7 @@ class Coordinator : NSObject, MTKViewDelegate {
     }
         
     func draw(in view: MTKView) {
-        
-      
-        
+    
         paddle1.update()
         paddle2.update()
         ball.update()
@@ -203,11 +173,14 @@ class Coordinator : NSObject, MTKViewDelegate {
         let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)
         
         
-        
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 1.0)
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(
+            Double(backgroundColor.x),
+            Double(backgroundColor.y),
+            Double(backgroundColor.z),
+            Double(backgroundColor.w))
         renderPassDescriptor.stencilAttachment.clearStencil = 0
         renderPassDescriptor.depthAttachment.texture = depthTexture
         
@@ -228,13 +201,11 @@ class Coordinator : NSObject, MTKViewDelegate {
         cameraBuffers.writeToBuffers(camera: &camera)
         
         // load lights data
-        lightBuffer.writeIntoBuffers(ambientLight: &ambientLight, directionalLight: &directionalLight) 
-        
+        lightBuffer.writeIntoBuffers(ambientLight: &ambientLight, directionalLight: &directionalLight)
         
         drawPaddles(renderEncoder: renderEncoder)
         drawBall(renderEncoder: renderEncoder)
        
-        
         // END DRAW HERE
         
         // end encoding

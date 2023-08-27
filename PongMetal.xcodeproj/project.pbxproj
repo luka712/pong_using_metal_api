@@ -31,7 +31,6 @@
 		C6D5ECC02A968C85008CE25A /* GeometryUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */; };
 		C6D5ECC22A968FF5008CE25A /* CylinderGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */; };
 		C6FA66F92A953D780063635B /* Paddle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FA66F82A953D780063635B /* Paddle.swift */; };
-		C6FA66FB2A954EDD0063635B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FA66FA2A954EDD0063635B /* Constants.swift */; };
 		C6FA66FD2A9550720063635B /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FA66FC2A9550720063635B /* Camera.swift */; };
 		C6FA67012A9560B00063635B /* Ball.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FA67002A9560B00063635B /* Ball.swift */; };
 /* End PBXBuildFile section */
@@ -63,7 +62,6 @@
 		C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtil.swift; sourceTree = "<group>"; };
 		C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CylinderGeometry.swift; sourceTree = "<group>"; };
 		C6FA66F82A953D780063635B /* Paddle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paddle.swift; sourceTree = "<group>"; };
-		C6FA66FA2A954EDD0063635B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C6FA66FC2A9550720063635B /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		C6FA67002A9560B00063635B /* Ball.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ball.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -152,14 +150,17 @@
 		C663D0D62A91E5F70012F673 /* PongMetal */ = {
 			isa = PBXGroup;
 			children = (
+				C6EE5D462A9B25260039D40F /* Math */,
+				C6EE5D452A9B250F0039D40F /* Geometry */,
+				C6EE5D442A9B24FB0039D40F /* RenderPipeline */,
+				C6EE5D432A9B24E20039D40F /* Shader */,
+				C6EE5D422A9B24940039D40F /* Camera */,
 				C65D33B02A9A9E390018C714 /* Input */,
 				C65D33AB2A9A8E690018C714 /* Collision */,
 				C60666EF2A974FBB00034A10 /* Buffers */,
 				C60666EE2A974F5000034A10 /* GameObjects */,
 				C60666EB2A974ED200034A10 /* Material */,
 				C60666EA2A974D2500034A10 /* Lights */,
-				C6FA66FC2A9550720063635B /* Camera.swift */,
-				C6FA66FA2A954EDD0063635B /* Constants.swift */,
 				C604234C2A92706B00CFBC3E /* shader.metallib */,
 				C604234A2A926D5600CFBC3E /* shader.metal */,
 				C663D0D72A91E5F70012F673 /* PongMetalApp.swift */,
@@ -168,12 +169,6 @@
 				C663D0E02A91E5F70012F673 /* PongMetal.entitlements */,
 				C663D0DD2A91E5F70012F673 /* Preview Content */,
 				C663D0E82A91EA400012F673 /* Coordinator.swift */,
-				C604234E2A92708300CFBC3E /* ShaderLib.swift */,
-				C6D381C92A92AB1F00E9BBD9 /* RenderPipeline.swift */,
-				C63EC8FB2A93C87A0093035E /* CubeGeometry.swift */,
-				C699C7332A93CD07000740A7 /* MatrixUtil.swift */,
-				C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */,
-				C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */,
 			);
 			path = PongMetal;
 			sourceTree = "<group>";
@@ -184,6 +179,48 @@
 				C663D0DE2A91E5F70012F673 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C6EE5D422A9B24940039D40F /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				C6FA66FC2A9550720063635B /* Camera.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		C6EE5D432A9B24E20039D40F /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+				C604234E2A92708300CFBC3E /* ShaderLib.swift */,
+			);
+			path = Shader;
+			sourceTree = "<group>";
+		};
+		C6EE5D442A9B24FB0039D40F /* RenderPipeline */ = {
+			isa = PBXGroup;
+			children = (
+				C6D381C92A92AB1F00E9BBD9 /* RenderPipeline.swift */,
+			);
+			path = RenderPipeline;
+			sourceTree = "<group>";
+		};
+		C6EE5D452A9B250F0039D40F /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				C6D5ECC12A968FF5008CE25A /* CylinderGeometry.swift */,
+				C6D5ECBF2A968C85008CE25A /* GeometryUtil.swift */,
+				C63EC8FB2A93C87A0093035E /* CubeGeometry.swift */,
+			);
+			path = Geometry;
+			sourceTree = "<group>";
+		};
+		C6EE5D462A9B25260039D40F /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				C699C7332A93CD07000740A7 /* MatrixUtil.swift */,
+			);
+			path = Math;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,7 +317,6 @@
 				C60666F32A97507B00034A10 /* InstanceBuffers.swift in Sources */,
 				C6D5ECC22A968FF5008CE25A /* CylinderGeometry.swift in Sources */,
 				C60666F92A975B1D00034A10 /* DirectionalLight.swift in Sources */,
-				C6FA66FB2A954EDD0063635B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

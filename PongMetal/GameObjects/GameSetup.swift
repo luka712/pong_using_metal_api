@@ -20,5 +20,8 @@ struct GameSetup
     static let gameBoundZ: Float = 7
     
     static let ballStartSpeed: Float = 0.15
-    static let ballRadius: Float = 1 
+    static let ballRadius: Float = 1
+    
+    static let gameWidth = 1280.0
+    static let gameHeight = 720.0
 }
