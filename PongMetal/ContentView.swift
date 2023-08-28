@@ -14,6 +14,7 @@ struct ContentView: NSViewRepresentable {
     @Binding var leftPaddleColor: Color
     @Binding var rightPaddleColor: Color
     @Binding var ballColor: Color
+    @Binding var splitScreen: Bool
     
     
     func makeNSView(context: Context) -> MTKView {
@@ -27,6 +28,9 @@ struct ContentView: NSViewRepresentable {
     }
     
     func updateNSView(_ nsView: NSViewType, context: Context) {
+        
+        context.coordinator.splitScreen = splitScreen
+        
         
         setColor(colorOut: &context.coordinator.backgroundColor, colorIn: backgroundColor)
         
@@ -75,7 +79,9 @@ struct ContentView_Previews: PreviewProvider {
             backgroundColor: Binding.constant(.cyan),
             leftPaddleColor: Binding.constant(Color.gray),
             rightPaddleColor: Binding.constant(Color.gray),
-            ballColor: Binding.constant(Color.white)
+            ballColor: Binding.constant(Color.white),
+            splitScreen: Binding.constant(false)
+        
         )
     }
 }

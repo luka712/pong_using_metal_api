@@ -22,6 +22,7 @@ struct PongMetalApp: App {
 
 struct MainContent : View
 {
+    @State private var splitScreen = false
     @State private var backgroundColor = Color.cyan
     @State private var leftPaddleColor = Color.red
     @State private var rightPaddleColor = Color.blue
@@ -30,9 +31,18 @@ struct MainContent : View
     
     
     var body: some View {
+
         HStack {
             
             VStack {
+                
+                Spacer()
+                    .frame(height: 20)
+                Toggle(isOn: $splitScreen ) {
+                    Text("Split Screen")
+                }
+                .toggleStyle(.checkbox)
+                
                 Spacer()
                     .frame(height: 20)
                 ColorPicker("Background color: ", selection: $backgroundColor)
@@ -49,7 +59,11 @@ struct MainContent : View
                     .frame(height: 20)
                 ColorPicker("Ball color: ", selection: $ballColor)
             }
-            .frame(width: 200, alignment: .topLeading)
+            .frame(minWidth: 200,
+                   maxWidth: 200,
+                   minHeight: 720,
+                   maxHeight: 720,
+                   alignment: .topLeading)
             .padding(5)
 
             
@@ -57,10 +71,9 @@ struct MainContent : View
                 backgroundColor: $backgroundColor,
                 leftPaddleColor: $leftPaddleColor,
                 rightPaddleColor: $rightPaddleColor,
-                ballColor: $ballColor
+                ballColor: $ballColor,
+                splitScreen: $splitScreen
             ).frame(width: GameSetup.gameWidth, height: GameSetup.gameHeight)
-                
-           
         }
     }
 }
