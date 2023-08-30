@@ -28,24 +28,24 @@ class ShaderLib
     }
     
     
-    init( device: MTLDevice)
+    init( device: MTLDevice, vertexFnName: String = "vs_main", fragmentFnName: String = "fs_main")
     {
         self.device = device
-        load()
+        load( vertexFnName, fragmentFnName )
     }
     
-    private func load()
+    private func load(_ vertexFnName: String , _ fragmentFnName: String)
     {
 
         // try to find library file
         _shaderLibrary = device.makeDefaultLibrary()
                                     
         // find vertex functions
-        guard let vFn = _shaderLibrary?.makeFunction(name: "vs_main") else {
+        guard let vFn = _shaderLibrary?.makeFunction(name: vertexFnName) else {
             print("Vertex function not found")
             return
         }
-        guard let fFn = _shaderLibrary?.makeFunction(name: "fs_main") else {
+        guard let fFn = _shaderLibrary?.makeFunction(name: fragmentFnName) else {
             print("Fragment function not found")
             return
         }

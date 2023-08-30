@@ -21,6 +21,8 @@ class Coordinator : NSObject, MTKViewDelegate {
     let device: MTLDevice
     let shaderLib: ShaderLib
     
+    let useFxaa = true
+    
     let inputManager: InputManager
     
     // if true, use split screen
@@ -53,7 +55,8 @@ class Coordinator : NSObject, MTKViewDelegate {
     let cameraBuffers: CameraBuffers
     let camera2Buffers: CameraBuffers
     
-    
+    // FXAA
+    let fxaaRenderPipeline: FxaaRenderPipeline
     
     
     init(width: CGFloat = 1280.0, height:CGFloat = 720.0 )
@@ -80,7 +83,7 @@ class Coordinator : NSObject, MTKViewDelegate {
         paddleRenderPipeline = RenderPipeline(device, shaderLib)
         paddleRenderPipeline2 = RenderPipeline(device, shaderLib)
         let cubeGeometry = CubeGeometry();
-        paddleBuffers = GeometryBuffers(device, cubeGeometry.indices, cubeGeometry.positionVertices, cubeGeometry.normalVertices)
+        paddleBuffers = GeometryBuffers(device, cubeGeometry.indices, cubeGeometry.positionVertices, cubeGeometry.normalVertices, nil )
         paddleInstanceBuffers = InstanceBuffers(device, instances: 2)
         
         // setup ball
@@ -92,6 +95,9 @@ class Coordinator : NSObject, MTKViewDelegate {
         
         // lights
         lightBuffer = LightBuffers(device)
+        
+        // FXAA
+        fxaaRenderPipeline = FxaaRenderPipeline(device)
         
         super.init()
         
@@ -174,7 +180,14 @@ class Coordinator : NSObject, MTKViewDelegate {
         
         
         let renderPassDescriptor = MTLRenderPassDescriptor()
-        renderPassDescriptor.colorAttachments[0].texture =  view.currentDrawable?.texture
+
+        // if fxaa is used, texture is set to texture which will be used by post process fxaa pass, else use the view texture
+        if useFxaa {
+            renderPassDescriptor.colorAttachments[0].texture = fxaaRenderPipeline.destinationTexture
+        }
+        else{
+            renderPassDescriptor.colorAttachments[0].texture =  view.currentDrawable?.texture
+        }
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(
             Double(backgroundColor.x),
@@ -189,7 +202,7 @@ class Coordinator : NSObject, MTKViewDelegate {
         renderEncoder.setCullMode(.back)
         renderEncoder.setFrontFacing(.counterClockwise)
         renderEncoder.setDepthStencilState(depthStencilState)
-        
+    
         return renderEncoder
     }
     
@@ -265,15 +278,32 @@ class Coordinator : NSObject, MTKViewDelegate {
             drawPaddles(pipeline: paddleRenderPipeline, cameraBuffer: cameraBuffers)
             drawBall()
         }
-
-
-        
-
-       
         // END DRAW HERE
-
-        // present the drawable
         renderEncoder.endEncoding()
+
+        // POST PROCESS
+        // FXAA
+        if useFxaa {
+            // if fxaa is used we create another render command encoder
+            let renderPassDesc =  MTLRenderPassDescriptor()
+            renderPassDesc.colorAttachments[0].texture = view.currentDrawable?.texture
+            renderPassDesc.colorAttachments[0].loadAction = .clear
+            renderPassDesc.colorAttachments[0].clearColor = MTLClearColorMake(
+                Double(backgroundColor.x),
+                Double(backgroundColor.y),
+                Double(backgroundColor.z),
+                Double(backgroundColor.w))
+            renderPassDesc.colorAttachments[0].storeAction = .store
+            
+            let fxaaRenderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDesc)!
+            fxaaRenderPipeline.draw(renderEncoder: fxaaRenderEncoder)
+            
+            fxaaRenderEncoder.endEncoding()
+            
+        }
+        
+        // present the drawable
+
         commandBuffer.present(view.currentDrawable!)
         commandBuffer.commit()
     }

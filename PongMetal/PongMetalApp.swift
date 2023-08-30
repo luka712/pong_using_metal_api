@@ -73,7 +73,8 @@ struct MainContent : View
                 rightPaddleColor: $rightPaddleColor,
                 ballColor: $ballColor,
                 splitScreen: $splitScreen
-            ).frame(width: GameSetup.gameWidth, height: GameSetup.gameHeight)
+            ).frame(width: GameSetup.frameWidth, height: GameSetup.frameHeight, alignment: .center)
+        
         }
     }
 }

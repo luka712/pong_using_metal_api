@@ -31,13 +31,13 @@ struct Camera
         // or left player ( player 1)
         else if options == CameraOptions.splitScreenTop {
             perspectiveMatrix = MatrixUtil.perspectiveProjectionMatrix(Float.pi * 0.6, Float(width/height), 0.1, 1000.0)
-            viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(15,-5,0), simd_float3(0,0,0), simd_float3(0,-1,0))
+            viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(12,-4,0), simd_float3(0,0,0), simd_float3(0,-1,0))
             viewMatrix *= MatrixUtil.rotationMatrix(angle:  .pi, axis: simd_float3(0,1,0))
         }
         // or right player ( player 2)
         else {
             perspectiveMatrix = MatrixUtil.perspectiveProjectionMatrix(Float.pi * 0.6, Float(width/height), 0.1, 1000.0)
-            viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(-15,-5,0), simd_float3(0,0,0), simd_float3(0,-1,0))
+            viewMatrix = MatrixUtil.lookAtMatrix(simd_float3(-12,-4,0), simd_float3(0,0,0), simd_float3(0,-1,0))
             viewMatrix *= MatrixUtil.rotationMatrix(angle:  .pi, axis: simd_float3(0,1,0))
         }
     }

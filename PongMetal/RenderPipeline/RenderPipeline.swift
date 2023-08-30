@@ -20,7 +20,7 @@ class RenderPipeline
         renderDescriptor.vertexFunction = shaderLib.vertexFunction
         renderDescriptor.fragmentFunction = shaderLib.fragmentFunction
         renderDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-        renderDescriptor.depthAttachmentPixelFormat = .depth32Float
+        renderDescriptor.depthAttachmentPixelFormat = .depth32Float 
         
         // set descriptors
         
