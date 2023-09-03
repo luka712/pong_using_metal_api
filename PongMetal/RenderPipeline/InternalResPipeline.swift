@@ -1,33 +1,29 @@
 //
-//  FxaaRenderPipeline.swift
+//  InternalResPipeline.swift
 //  PongMetal
 //
-//  Created by Luka Erkapic on 29.08.23.
+//  Created by Luka Erkapic on 31.08.23.
 //
 
 import Foundation
 import Metal
 
-class FxaaRenderPipeline
-
+class InternalResPipeline
 {
     let renderPipelineState: MTLRenderPipelineState
     let buffers: GeometryBuffers
-    let resolutionBuffer: MTLBuffer
     
     let destinationTexture: MTLTexture
     let sampler: MTLSamplerState
-    
-    
     
     init(_ device: MTLDevice)
     {
         let geometry = QuadGeometry();
         buffers = GeometryBuffers(device, geometry.indices, geometry.vertices, nil, geometry.uvCoords)
-        let shaderLib = ShaderLib(device: device, vertexFnName: "fxaa_vs_main", fragmentFnName: "fxaa_fs_main")
+        let shaderLib = ShaderLib(device: device, vertexFnName: "internal_res_vs_main", fragmentFnName: "internal_res_fs_main")
         
         let renderDescriptor = MTLRenderPipelineDescriptor()
-        renderDescriptor.label = "fxaa"
+        renderDescriptor.label = "internal resolution"
         renderDescriptor.vertexFunction = shaderLib.vertexFunction
         renderDescriptor.fragmentFunction = shaderLib.fragmentFunction
         renderDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
@@ -46,15 +42,11 @@ class FxaaRenderPipeline
         destinationTexture = device.makeTexture(descriptor: textureDescriptor)!
         
         let samplerDescriptor = MTLSamplerDescriptor()
-        samplerDescriptor.minFilter = .nearest
-        samplerDescriptor.magFilter = .nearest
-        
+        samplerDescriptor.minFilter = .linear
+        samplerDescriptor.magFilter = .linear
         samplerDescriptor.sAddressMode = .clampToEdge
         samplerDescriptor.tAddressMode = .clampToEdge
         sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
-        
-        let resolution: [Float] = [ Float(GameSetup.gameWidth), Float(GameSetup.gameHeight) ]
-        resolutionBuffer = device.makeBuffer(bytes: resolution, length: MemoryLayout<Float>.size * 2, options: [])!
         
         self.renderPipelineState = renderPipelineState
     }
@@ -65,8 +57,7 @@ class FxaaRenderPipeline
         
         renderEncoder.setVertexBuffer(buffers.vertexPositionBuffer, offset: 0, index: 0)
         renderEncoder.setVertexBuffer(buffers.texCoordsBuffer, offset: 0, index: 1)
-        renderEncoder.setVertexBuffer(resolutionBuffer, offset: 0, index: 2)
-
+        
         renderEncoder.setFragmentTexture(destinationTexture, index: 0)
         renderEncoder.setFragmentSamplerState(sampler, index: 0)
         

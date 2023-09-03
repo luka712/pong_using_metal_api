@@ -22,7 +22,7 @@ struct ContentView: NSViewRepresentable {
         let view = MTKView()
         view.delegate = context.coordinator
         view.device =  MTLCreateSystemDefaultDevice()
-        view.drawableSize = view.frame.size
+        view.drawableSize = CGSize(width: GameSetup.gameWidth, height: GameSetup.gameHeight)
         view.preferredFramesPerSecond = 60
         return view
     }
@@ -30,7 +30,6 @@ struct ContentView: NSViewRepresentable {
     func updateNSView(_ nsView: NSViewType, context: Context) {
         
         context.coordinator.splitScreen = splitScreen
-        
         
         setColor(colorOut: &context.coordinator.backgroundColor, colorIn: backgroundColor)
         
@@ -81,7 +80,6 @@ struct ContentView_Previews: PreviewProvider {
             rightPaddleColor: Binding.constant(Color.gray),
             ballColor: Binding.constant(Color.white),
             splitScreen: Binding.constant(false)
-        
-        )
+        ).frame(width: GameSetup.frameWidth, height: GameSetup.frameHeight)
     }
 }

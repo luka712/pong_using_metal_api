@@ -21,7 +21,7 @@ class Coordinator : NSObject, MTKViewDelegate {
     let device: MTLDevice
     let shaderLib: ShaderLib
     
-    let useFxaa = true
+    var useFxaa = true
     
     let inputManager: InputManager
     
@@ -55,14 +55,14 @@ class Coordinator : NSObject, MTKViewDelegate {
     let cameraBuffers: CameraBuffers
     let camera2Buffers: CameraBuffers
     
-    // FXAA
-    let fxaaRenderPipeline: FxaaRenderPipeline
-    
-    
-    init(width: CGFloat = 1280.0, height:CGFloat = 720.0 )
+    // internal res
+    var internalRenderPipeline: InternalResPipeline
+        
+    override init( )
     {
-        self.width = width
-        self.height = height
+        self.width = GameSetup.gameWidth
+        self.height = GameSetup.gameHeight
+        
         
         inputManager = InputManager()
         
@@ -96,12 +96,18 @@ class Coordinator : NSObject, MTKViewDelegate {
         // lights
         lightBuffer = LightBuffers(device)
         
-        // FXAA
-        fxaaRenderPipeline = FxaaRenderPipeline(device)
-        
+        internalRenderPipeline = InternalResPipeline(device)
         super.init()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(onInternalResolutionChanged), name: GameSetup.resolutionChangedEvent, object: nil)
+
+        
     }
+    
+    @objc private func onInternalResolutionChanged() {
+        internalRenderPipeline = InternalResPipeline(device)
+    }
+    
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         // called on resolution change
@@ -173,21 +179,14 @@ class Coordinator : NSObject, MTKViewDelegate {
         // depth texture
         let depthTextureDescriptor = MTLTextureDescriptor()
         depthTextureDescriptor.pixelFormat = .depth32Float
-        depthTextureDescriptor.width = Int(view.drawableSize.width)
-        depthTextureDescriptor.height = Int(view.drawableSize.height)
+        depthTextureDescriptor.width = Int(GameSetup.gameWidth)
+        depthTextureDescriptor.height = Int(GameSetup.gameHeight)
         depthTextureDescriptor.usage = .renderTarget
         let depthTexture = device.makeTexture(descriptor: depthTextureDescriptor)
         
         
         let renderPassDescriptor = MTLRenderPassDescriptor()
-
-        // if fxaa is used, texture is set to texture which will be used by post process fxaa pass, else use the view texture
-        if useFxaa {
-            renderPassDescriptor.colorAttachments[0].texture = fxaaRenderPipeline.destinationTexture
-        }
-        else{
-            renderPassDescriptor.colorAttachments[0].texture =  view.currentDrawable?.texture
-        }
+        renderPassDescriptor.colorAttachments[0].texture = internalRenderPipeline.destinationTexture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(
             Double(backgroundColor.x),
@@ -217,11 +216,11 @@ class Coordinator : NSObject, MTKViewDelegate {
         ball.intersect(paddle: paddle1)
         ball.intersect(paddle: paddle2)
     }
+
+
         
     func draw(in view: MTKView) {
-    
         update()
-        
         
         // create command buffer
         let commandQueue = device.makeCommandQueue()!
@@ -280,32 +279,43 @@ class Coordinator : NSObject, MTKViewDelegate {
         }
         // END DRAW HERE
         renderEncoder.endEncoding()
-
-        // POST PROCESS
-        // FXAA
-        if useFxaa {
-            // if fxaa is used we create another render command encoder
-            let renderPassDesc =  MTLRenderPassDescriptor()
-            renderPassDesc.colorAttachments[0].texture = view.currentDrawable?.texture
-            renderPassDesc.colorAttachments[0].loadAction = .clear
-            renderPassDesc.colorAttachments[0].clearColor = MTLClearColorMake(
-                Double(backgroundColor.x),
-                Double(backgroundColor.y),
-                Double(backgroundColor.z),
-                Double(backgroundColor.w))
-            renderPassDesc.colorAttachments[0].storeAction = .store
-            
-            let fxaaRenderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDesc)!
-            fxaaRenderPipeline.draw(renderEncoder: fxaaRenderEncoder)
-            
-            fxaaRenderEncoder.endEncoding()
-            
-        }
+        
+        // Render to whole screen with internal pipeline
+        // Render from internal buffer to final view
+        
+        let internalPipelineDesc = MTLRenderPassDescriptor()
+        internalPipelineDesc.colorAttachments[0].texture =  view.currentDrawable?.texture
+        internalPipelineDesc.colorAttachments[0].loadAction = .clear
+        internalPipelineDesc.colorAttachments[0].clearColor = MTLClearColorMake(
+            Double(backgroundColor.x),
+            Double(backgroundColor.y),
+            Double(backgroundColor.z),
+            Double(backgroundColor.w))
+        internalPipelineDesc.colorAttachments[0].storeAction = .store
+        
+        
+        let internalPipelineRenderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: internalPipelineDesc)!
+                
+        internalPipelineRenderEncoder.setViewport(MTLViewport(
+            originX: 0, originY: 0 ,
+            width: GameSetup.frameWidth, height: GameSetup.frameHeight,
+            znear: 0.0, zfar: 1.0
+        ))
+        
+        internalPipelineRenderEncoder.setScissorRect(MTLScissorRect(
+            x: 0, y: 0,
+            width: Int(GameSetup.frameWidth), height: Int(GameSetup.frameHeight)
+        ))
+        
+        internalRenderPipeline.draw(renderEncoder: internalPipelineRenderEncoder )
+        internalPipelineRenderEncoder.endEncoding()
         
         // present the drawable
 
         commandBuffer.present(view.currentDrawable!)
         commandBuffer.commit()
+        
+
     }
     
     
